@@ -1,4 +1,4 @@
-import { FileText, Image as ImageIcon, Files, Settings, Info, Search, Menu, LogOut } from 'lucide-react';
+import { FileText, Menu, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -14,15 +14,9 @@ export default function Sidebar({ secretCode: _, onMobileClose }: SidebarProps) 
 
   const navItems = [
     { icon: FileText, label: 'Notes', active: true },
-    { icon: ImageIcon, label: 'Images' },
-    { icon: Files, label: 'Files' },
-    { icon: Search, label: 'Search' },
   ];
 
-  const bottomItems = [
-    { icon: Settings, label: 'Settings' },
-    { icon: Info, label: 'About' },
-  ];
+  const bottomItems: any[] = [];
 
   return (
     <motion.aside
