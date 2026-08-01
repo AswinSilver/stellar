@@ -1,22 +1,31 @@
 import { useStore } from '../store/useStore';
-import { Bold, Italic, Strikethrough, List, ListOrdered, Code, Heading1, Heading2, Quote, RotateCcw, RotateCw } from 'lucide-react';
-import { useEffect } from 'react';
+import { Bold, Italic, Strikethrough, List, ListOrdered, Code, Heading1, Heading2, Quote, RotateCcw, RotateCw, ImagePlus, Paperclip } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
 
 interface EditorProps {
   onChange: (content: string) => void;
+  onUploadFile?: (file: File) => Promise<any>;
 }
 
-export default function Editor({ onChange }: EditorProps) {
+export default function Editor({ onChange, onUploadFile }: EditorProps) {
   const { note } = useStore();
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
         placeholder: 'Start typing...',
+      }),
+      Image,
+      Link.configure({
+        openOnClick: false,
       }),
     ],
     content: note.content,
@@ -42,6 +51,32 @@ export default function Editor({ onChange }: EditorProps) {
   if (!editor) {
     return null;
   }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file') => {
+    const file = e.target.files?.[0];
+    if (!file || !onUploadFile) return;
+
+    try {
+      const uploadedInfo = await onUploadFile(file);
+      if (uploadedInfo && uploadedInfo.url) {
+        if (type === 'image') {
+          editor.chain().focus().setImage({ src: uploadedInfo.url }).run();
+        } else {
+          // If there's selected text, make it a link. Otherwise insert the filename as a link.
+          if (editor.state.selection.empty) {
+            editor.chain().focus().insertContent(`<a href="${uploadedInfo.url}" target="_blank">${file.name}</a> `).run();
+          } else {
+            editor.chain().focus().extendMarkRange('link').setLink({ href: uploadedInfo.url }).run();
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    
+    // Reset input
+    e.target.value = '';
+  };
 
   const ToolbarButton = ({ 
     onClick, 
@@ -148,6 +183,35 @@ export default function Editor({ onChange }: EditorProps) {
           label="Redo"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
+        />
+        
+        <div className="w-px h-6 bg-neutral-200 dark:bg-neutral-800 mx-1 flex-shrink-0" />
+        
+        <input 
+          type="file" 
+          ref={imageInputRef} 
+          onChange={(e) => handleFileUpload(e, 'image')} 
+          accept="image/*" 
+          className="hidden" 
+        />
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          onChange={(e) => handleFileUpload(e, 'file')} 
+          className="hidden" 
+        />
+        
+        <ToolbarButton
+          icon={ImagePlus}
+          label="Insert Image"
+          onClick={() => imageInputRef.current?.click()}
+          disabled={!onUploadFile}
+        />
+        <ToolbarButton
+          icon={Paperclip}
+          label="Attach File"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={!onUploadFile}
         />
       </div>
 

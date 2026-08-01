@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 export default function Workspace() {
   const { secretCode } = useParams<{ secretCode: string }>();
-  const { handleNoteChange } = useSync(secretCode || '');
+  const { handleNoteChange, uploadFile } = useSync(secretCode || '');
   const { isSaving, connectedDevices } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -81,7 +81,7 @@ export default function Workspace() {
         {/* Editor Area */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-8 w-full">
-            <Editor onChange={handleNoteChange} />
+            <Editor onChange={handleNoteChange} onUploadFile={uploadFile} />
           </div>
         </div>
       </main>

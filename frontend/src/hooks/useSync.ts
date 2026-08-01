@@ -127,13 +127,16 @@ export function useSync(secretCode: string) {
         } else {
           await updateDoc(docRef, { files: [...files, newFile] });
         }
+        return newFile;
       } else {
         console.error("Cloudinary upload failed:", data);
         alert("Failed to upload file to Cloudinary.");
+        return null;
       }
     } catch (error) {
       console.error("Upload error", error);
       alert("Error uploading file.");
+      return null;
     } finally {
       setIsSaving(false);
     }
