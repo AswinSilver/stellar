@@ -77,6 +77,50 @@ npm run build
 
 This will generate the compiled static assets in the `frontend/dist` directory.
 
+## ☁️ Deployment (Vercel)
+
+The easiest way to deploy Stellar is using [Vercel](https://vercel.com). Since the app code is inside the `frontend` folder, you need to configure the project settings appropriately on Vercel.
+
+### Option 1: Deploy via Vercel Dashboard (Recommended)
+
+1. Go to your [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New... > Project**.
+2. **Import your GitHub repository** (`AswinSilver/stellar`).
+3. In the "Configure Project" screen, update the following settings:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend` (Click Edit, select the `frontend` folder, and click Continue)
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Expand the **Environment Variables** section and add all your Firebase variables from your `.env.local` file:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+5. Click **Deploy**. Vercel will automatically build and deploy your application.
+
+### Option 2: Deploy via Vercel CLI
+
+1. Install the Vercel CLI globally:
+   ```bash
+   npm i -g vercel
+   ```
+2. Run Vercel in your project root:
+   ```bash
+   vercel
+   ```
+3. Follow the prompts:
+   - *Set up and deploy?* **Y**
+   - *Which scope?* **(Your account)**
+   - *Link to existing project?* **N**
+   - *What's your project's name?* **stellar**
+   - *In which directory is your code located?* **./frontend**
+4. Set up your environment variables for production via the Vercel dashboard or CLI.
+5. For a production deployment, run:
+   ```bash
+   vercel --prod
+   ```
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
