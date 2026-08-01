@@ -1,0 +1,9 @@
+{
+  "name": "pluckachan-syncpad",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
