@@ -85,10 +85,8 @@ export default function Login() {
       >
         {/* Header */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10">
-            <Lock className="w-8 h-8 text-neutral-300" />
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">SyncPad</h1>
+          <img src="/favicon.svg" alt="Stellar Logo" className="w-20 h-20 mb-4" />
+          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Stellar</h1>
           <p className="text-neutral-400 text-center text-sm">
             Real-time collaborative workspace. No account required.
           </p>
