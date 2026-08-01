@@ -39,7 +39,7 @@ export default function Sidebar({ secretCode: _, onMobileClose }: SidebarProps) 
               className="font-bold text-xl tracking-tight text-neutral-800 dark:text-neutral-100 flex items-center gap-2"
             >
               <div className="w-2 h-2 rounded-full bg-blue-500" />
-              SyncPad
+              Stellar
             </motion.div>
           )}
         </AnimatePresence>
