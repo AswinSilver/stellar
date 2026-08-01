@@ -117,7 +117,8 @@ export function useSync(secretCode: string) {
           name: file.name,
           url: data.secure_url,
           type: file.type,
-          size: file.size
+          size: file.size,
+          publicId: data.public_id
         };
 
         const docRef = doc(db, 'workspaces', secretCode);
@@ -142,9 +143,65 @@ export function useSync(secretCode: string) {
     }
   };
 
+  const deleteFile = async (file: UploadedFile, type: 'image' | 'file') => {
+    try {
+      setIsSaving(true);
+      const docRef = doc(db, 'workspaces', secretCode);
+      
+      // 1. Delete from Firestore
+      if (type === 'image') {
+        const newImages = images.filter(img => img.id !== file.id);
+        await updateDoc(docRef, { images: newImages });
+      } else {
+        const newFiles = files.filter(f => f.id !== file.id);
+        await updateDoc(docRef, { files: newFiles });
+      }
+
+      // 2. Delete from Cloudinary (if API Key/Secret is provided in .env)
+      const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+      const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+      if (apiKey && apiSecret && cloudName) {
+        let publicId = file.publicId;
+        if (!publicId) {
+          const parts = file.url.split('/');
+          const filename = parts[parts.length - 1];
+          publicId = filename.split('.')[0];
+        }
+
+        const timestamp = Math.round(new Date().getTime() / 1000);
+        const str = `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+        
+        // Generate SHA-1
+        const msgUint8 = new TextEncoder().encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        const formData = new FormData();
+        formData.append('public_id', publicId);
+        formData.append('signature', signature);
+        formData.append('api_key', apiKey);
+        formData.append('timestamp', timestamp.toString());
+
+        const resourceType = type === 'image' ? 'image' : 'raw';
+        await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/destroy`, {
+          method: 'POST',
+          body: formData
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return {
     note,
     handleNoteChange,
-    uploadFile
+    uploadFile,
+    deleteFile
   };
 }

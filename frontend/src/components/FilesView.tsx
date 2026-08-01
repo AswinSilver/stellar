@@ -1,12 +1,14 @@
 import { useStore } from '../store/useStore';
-import { UploadCloud, Folder, File as FileIcon, Download } from 'lucide-react';
+import type { UploadedFile } from '../store/useStore';
+import { UploadCloud, Folder, File as FileIcon, Download, Trash2 } from 'lucide-react';
 import { useRef } from 'react';
 
 interface FilesViewProps {
   onUploadFile: (file: File) => Promise<any>;
+  onDeleteFile: (file: UploadedFile, type: 'image' | 'file') => Promise<void>;
 }
 
-export default function FilesView({ onUploadFile }: FilesViewProps) {
+export default function FilesView({ onUploadFile, onDeleteFile }: FilesViewProps) {
   const { files } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,15 +68,24 @@ export default function FilesView({ onUploadFile }: FilesViewProps) {
                   <p className="text-xs sm:text-sm text-neutral-500">{formatSize(file.size)}</p>
                 </div>
               </div>
-              <a 
-                href={file.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="p-2 text-neutral-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors shrink-0 ml-2"
-                title="Download"
-              >
-                <Download className="w-5 h-5" />
-              </a>
+              <div className="flex items-center gap-2 shrink-0 ml-2">
+                <a 
+                  href={file.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 text-neutral-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                  title="Download"
+                >
+                  <Download className="w-5 h-5" />
+                </a>
+                <button
+                  onClick={() => onDeleteFile(file, 'file')}
+                  className="p-2 text-neutral-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Delete File"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           ))}
         </div>

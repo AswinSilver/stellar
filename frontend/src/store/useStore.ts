@@ -11,6 +11,7 @@ export interface UploadedFile {
   url: string;
   type: string;
   size: number;
+  publicId?: string;
 }
 
 interface WorkspaceState {

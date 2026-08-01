@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 export default function Workspace() {
   const { secretCode } = useParams<{ secretCode: string }>();
-  const { handleNoteChange, uploadFile } = useSync(secretCode || '');
+  const { handleNoteChange, uploadFile, deleteFile } = useSync(secretCode || '');
   const { isSaving, connectedDevices } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'notes' | 'images' | 'files'>('notes');
@@ -89,8 +89,8 @@ export default function Workspace() {
             </div>
           </div>
         )}
-        {activeTab === 'images' && <ImagesView onUploadFile={uploadFile} />}
-        {activeTab === 'files' && <FilesView onUploadFile={uploadFile} />}
+        {activeTab === 'images' && <ImagesView onUploadFile={uploadFile} onDeleteFile={deleteFile} />}
+        {activeTab === 'files' && <FilesView onUploadFile={uploadFile} onDeleteFile={deleteFile} />}
       </main>
     </div>
   );

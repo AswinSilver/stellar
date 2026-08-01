@@ -1,12 +1,14 @@
 import { useStore } from '../store/useStore';
-import { UploadCloud, Image as ImageIcon } from 'lucide-react';
+import type { UploadedFile } from '../store/useStore';
+import { UploadCloud, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { useRef } from 'react';
 
 interface ImagesViewProps {
   onUploadFile: (file: File) => Promise<any>;
+  onDeleteFile: (file: UploadedFile, type: 'image' | 'file') => Promise<void>;
 }
 
-export default function ImagesView({ onUploadFile }: ImagesViewProps) {
+export default function ImagesView({ onUploadFile, onDeleteFile }: ImagesViewProps) {
   const { images } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,9 +53,20 @@ export default function ImagesView({ onUploadFile }: ImagesViewProps) {
           {images.map((img, i) => (
             <div key={i} className="group relative aspect-square rounded-xl overflow-hidden bg-neutral-200 dark:bg-neutral-800 shadow-sm hover:shadow-md transition-shadow border border-neutral-200 dark:border-neutral-800">
               <img src={img.url} alt={img.name} className="w-full h-full object-cover" loading="lazy" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 sm:p-4">
-                <p className="text-white text-xs sm:text-sm truncate font-medium">{img.name}</p>
-                <a href={img.url} target="_blank" rel="noopener noreferrer" className="text-blue-300 text-xs hover:underline mt-1 w-max">Open original</a>
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3 sm:p-4">
+                <div className="flex justify-end">
+                  <button 
+                    onClick={() => onDeleteFile(img, 'image')}
+                    className="p-1.5 bg-red-500/80 hover:bg-red-500 text-white rounded-md transition-colors"
+                    title="Delete Image"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div>
+                  <p className="text-white text-xs sm:text-sm truncate font-medium">{img.name}</p>
+                  <a href={img.url} target="_blank" rel="noopener noreferrer" className="text-blue-300 text-xs hover:underline mt-1 w-max block">Open original</a>
+                </div>
               </div>
             </div>
           ))}
