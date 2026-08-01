@@ -47,7 +47,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
    ```
 
 4. **Environment Variables:**
-   Create a `.env.local` file in the `frontend` directory and add your Firebase configuration details:
+   Create a `.env.local` file in the `frontend` directory and add your Firebase and Cloudinary configuration details:
    ```env
    VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -55,6 +55,9 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
    VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
    VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
    VITE_FIREBASE_APP_ID=your_app_id
+   
+   VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
+   VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
    ```
 
 ### Running Locally
@@ -90,13 +93,15 @@ The easiest way to deploy Stellar is using [Vercel](https://vercel.com). Since t
    - **Root Directory**: `frontend` (Click Edit, select the `frontend` folder, and click Continue)
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. Expand the **Environment Variables** section and add all your Firebase variables from your `.env.local` file:
+4. Expand the **Environment Variables** section and add all your Firebase and Cloudinary variables from your `.env.local` file:
    - `VITE_FIREBASE_API_KEY`
    - `VITE_FIREBASE_AUTH_DOMAIN`
    - `VITE_FIREBASE_PROJECT_ID`
    - `VITE_FIREBASE_STORAGE_BUCKET`
    - `VITE_FIREBASE_MESSAGING_SENDER_ID`
    - `VITE_FIREBASE_APP_ID`
+   - `VITE_CLOUDINARY_CLOUD_NAME`
+   - `VITE_CLOUDINARY_UPLOAD_PRESET`
 5. Click **Deploy**. Vercel will automatically build and deploy your application.
 
 ### Option 2: Deploy via Vercel CLI
