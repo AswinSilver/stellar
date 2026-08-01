@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useSync } from '../hooks/useSync';
 import Sidebar from '../components/Sidebar';
 import Editor from '../components/Editor';
+import ImagesView from '../components/ImagesView';
+import FilesView from '../components/FilesView';
 import { useStore } from '../store/useStore';
 import { Check, CloudRain, Users, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +14,7 @@ export default function Workspace() {
   const { handleNoteChange, uploadFile } = useSync(secretCode || '');
   const { isSaving, connectedDevices } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'notes' | 'images' | 'files'>('notes');
 
   if (!secretCode) return <div className="p-8">Invalid code</div>;
 
@@ -32,7 +35,7 @@ export default function Workspace() {
       </AnimatePresence>
 
       <div className={`fixed inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar secretCode={secretCode} onMobileClose={() => setMobileMenuOpen(false)} />
+        <Sidebar secretCode={secretCode} onMobileClose={() => setMobileMenuOpen(false)} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
       
       <main className="flex-1 flex flex-col relative min-w-0 w-full">
@@ -78,12 +81,16 @@ export default function Workspace() {
           </div>
         </header>
 
-        {/* Editor Area */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-8 w-full">
-            <Editor onChange={handleNoteChange} onUploadFile={uploadFile} />
+        {/* Main Content Area */}
+        {activeTab === 'notes' && (
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-8 w-full">
+              <Editor onChange={handleNoteChange} onUploadFile={uploadFile} />
+            </div>
           </div>
-        </div>
+        )}
+        {activeTab === 'images' && <ImagesView onUploadFile={uploadFile} />}
+        {activeTab === 'files' && <FilesView onUploadFile={uploadFile} />}
       </main>
     </div>
   );

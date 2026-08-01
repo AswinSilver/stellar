@@ -1,4 +1,4 @@
-import { FileText, Menu, LogOut } from 'lucide-react';
+import { FileText, Menu, LogOut, Image as ImageIcon, Folder } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -6,14 +6,18 @@ import { useNavigate } from 'react-router-dom';
 interface SidebarProps {
   secretCode: string;
   onMobileClose?: () => void;
+  activeTab: 'notes' | 'images' | 'files';
+  onTabChange: (tab: 'notes' | 'images' | 'files') => void;
 }
 
-export default function Sidebar({ secretCode: _, onMobileClose }: SidebarProps) {
+export default function Sidebar({ secretCode: _, onMobileClose, activeTab, onTabChange }: SidebarProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const navigate = useNavigate();
 
   const navItems = [
-    { icon: FileText, label: 'Notes', active: true },
+    { id: 'notes' as const, icon: FileText, label: 'Notes' },
+    { id: 'images' as const, icon: ImageIcon, label: 'Images' },
+    { id: 'files' as const, icon: Folder, label: 'Files' },
   ];
 
   const bottomItems: any[] = [];
@@ -56,16 +60,19 @@ export default function Sidebar({ secretCode: _, onMobileClose }: SidebarProps) 
       </div>
 
       <nav className="flex-1 py-4 flex flex-col gap-1 px-3">
-        {navItems.map((item, i) => (
+        {navItems.map((item, i) => {
+          const isActive = activeTab === item.id;
+          return (
           <button
             key={i}
+            onClick={() => onTabChange(item.id)}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
-              item.active 
+              isActive 
                 ? 'bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 font-medium' 
                 : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-200'
             }`}
           >
-            <item.icon className={`w-5 h-5 ${item.active ? 'text-blue-500' : 'group-hover:text-neutral-900 dark:group-hover:text-neutral-200'}`} />
+            <item.icon className={`w-5 h-5 ${isActive ? 'text-blue-500' : 'group-hover:text-neutral-900 dark:group-hover:text-neutral-200'}`} />
             <AnimatePresence>
               {isExpanded && (
                 <motion.span
@@ -79,7 +86,7 @@ export default function Sidebar({ secretCode: _, onMobileClose }: SidebarProps) 
               )}
             </AnimatePresence>
           </button>
-        ))}
+        )})}
       </nav>
 
       <div className="p-3 border-t border-neutral-200 dark:border-neutral-800/50 flex flex-col gap-1">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Lock, Sparkles, Copy, Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Copy, Check } from 'lucide-react';
 
 function generateRoomCode(): string {
   const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
