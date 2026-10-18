@@ -131,7 +131,6 @@ export default function Login() {
             onClick={handleCreateRoom}
             className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all group"
           >
-            <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
             Create New Room
           </button>
         ) : (
